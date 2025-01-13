@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: default
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - cluster: kind-kind
+        url: https://127.0.0.1
+  template:
+    metadata:
+      name: '{{.cluster}}'
+    spec:
+      project: infra
+      source:
+        repoURL: https://github.com/iogamaster/infra.git
+        targetRevision: HEAD
+        path: k8s
+      destination:
+        server: '{{.url}}'
+        namespace: default
